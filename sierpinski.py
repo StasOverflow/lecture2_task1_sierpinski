@@ -1,13 +1,18 @@
 import turtle
 
 
-def triangle_draw(carriage, left_vertex, right_vertex, top_vertex):
+def triangle_rotate(vertex_list):
+    vertex_list.insert(0, vertex_list.pop())
+    return vertex_list
+
+
+def triangle_draw(carriage, vertex_list):
     carriage.up()
-    carriage.goto(left_vertex)
+    carriage.setpos(vertex_list[0])
     carriage.down()
-    carriage.goto(right_vertex)
-    carriage.goto(top_vertex)
-    carriage.goto(left_vertex)
+    carriage.setpos(vertex_list[1])
+    carriage.setpos(vertex_list[2])
+    carriage.setpos(vertex_list[0])
 
 
 def center_get(vertex_first, vertex_second):
@@ -17,38 +22,28 @@ def center_get(vertex_first, vertex_second):
     return center
 
 
-def sierpinski_triangle_draw(carriage, vertex_array, depth):
+def sierpinski_triangle_vertex_list_get(vertex_list):
+    sierpinski_vertex_list = list()
+    sierpinski_vertex_list.append(vertex_list[0])
+    sierpinski_vertex_list.append(center_get(vertex_list[0], vertex_list[1]))
+    sierpinski_vertex_list.append(center_get(vertex_list[0], vertex_list[2]))
+    return sierpinski_vertex_list
+
+
+def sierpinski_triangle_draw(carriage, vertex_list, depth):
     if depth:
-        left_vertex = vertex_array[0]
-        right_vertex = vertex_array[1]
-        top_vertex = vertex_array[2]
-        triangle_draw(carriage, left_vertex, right_vertex, top_vertex)
-        turns = 0
-        while turns < 3:
-            cell = turns
-            left_vertex = vertex_array[cell]
-            if cell + 1 >= 3:
-                cell = 0
-            else:
-                cell = cell + 1
-            right_vertex = vertex_array[cell]
-            if cell + 1 >= 3:
-                cell = 0
-            else:
-                cell = cell + 1
-            top_vertex = vertex_array[cell]
-            left_sub_vertex = left_vertex
-            right_sub_vertex = center_get(left_vertex, right_vertex)
-            top_sub_vertex = center_get(left_vertex, top_vertex)
-            sub_vertex_array = [left_sub_vertex, right_sub_vertex, top_sub_vertex]
-            sierpinski_triangle_draw(carriage, sub_vertex_array, depth - 1)
-            turns = turns + 1
+        triangle_draw(carriage, vertex_list)
+        array = vertex_list
+        for x in range(len(vertex_list)):
+            sub_triangle_vertex_list = sierpinski_triangle_vertex_list_get(vertex_list)
+            sierpinski_triangle_draw(carriage, sub_triangle_vertex_list, depth - 1)
+            array = triangle_rotate(array)
 
 
 def main():
     display_window = turtle.Screen()
     my_turtle = turtle.Turtle()
-    sierpinski_triangle_draw(my_turtle, [[-50, 0], [50, 0], [0, 86]], 5)
+    sierpinski_triangle_draw(my_turtle, [[-50, 0], [50, 0], [0, 86]], 4)
     display_window.exitonclick()
 
 
