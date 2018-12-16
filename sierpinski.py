@@ -22,6 +22,18 @@ def center_get(vertex_first, vertex_second):
     return center
 
 
+def triangle_vertex_list_get(start_point=[0, 0], side_length=100):
+    vertex_list = list()
+    vertex_list.append(start_point)
+    x_coord = start_point[0] + side_length
+    y_coord = start_point[1]
+    vertex_list.append([x_coord, y_coord])
+    x_coord = start_point[0] + side_length/2
+    y_coord = start_point[1] + side_length * 3 ** 0.5 / 2
+    vertex_list.append([x_coord, y_coord])
+    return vertex_list
+
+
 def sierpinski_triangle_vertex_list_get(vertex_list):
     sierpinski_vertex_list = list()
     sierpinski_vertex_list.append(vertex_list[0])
@@ -43,7 +55,8 @@ def sierpinski_triangle_draw(carriage, vertex_list, depth):
 def main():
     display_window = turtle.Screen()
     my_turtle = turtle.Turtle()
-    sierpinski_triangle_draw(my_turtle, [[-50, 0], [50, 0], [0, 86]], 4)
+    triangle_vertex_list = triangle_vertex_list_get([-200, -200], 400)
+    sierpinski_triangle_draw(my_turtle, triangle_vertex_list, 4)
     display_window.exitonclick()
 
 
